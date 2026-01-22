@@ -12,3 +12,57 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model Products {
+  id          String    @id @default(uuid())
+  name        String
+  slug        String    @unique
+  imgUrl      String
+  categories  ProductCategories[]
+  price       Float     @default(0)
+  isMember    Boolean   @default(false) 
+  isPreorder  Boolean   @default(false)
+  downPayment Float? 
+  description String?
+  weight      Int
+  year        Int
+  grade       int   
+
+  @@map("products")
+
+}
+
+enum GundamGrades {
+  ENTRY_GRADE
+  HIGH_GRADE
+  REAL_GRADE
+  MASTER_GRADE
+  PERFECT_GRADE
+}
+
+model ProductImages {
+  id        String      @id @default(ulid())
+  productId String
+  product   Products    @relation(fields: [productId], references: [id])
+  imgUrl    String
+
+  @@map("product_images")
+}
+
+model CategoryList {
+  id            String      @id @default(uuid())
+  name          String
+  slug          String      @unique
+  products      ProductCategories[]
+
+  @@map("category_list")
+}
+
+model ProductCategories {
+  id          String    @id @default(uuid())
+  productID   String
+  product     Products  @relation(fields: [productID], references: [id])
+categoryId    String
+categories    CategoryList @relation(fields: [categoryI], references: [id])
+  @@map("product_categories")
+}
